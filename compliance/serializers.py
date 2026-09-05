@@ -64,3 +64,16 @@ class TaxBracketSerializer(serializers.Serializer):
             raise serializers.ValidationError("annual_salary cannot be negative.")
         attrs['annual_salary'] = amount
         return attrs
+
+class ZakatSerializer(serializers.Serializer):
+    asset_value = serializers.CharField(max_length=100)
+
+    def validate(self, attrs):
+        asset = attrs.get("asset_value")
+        if not asset:
+            raise serializers.ValidationError("asset_value is required")
+        amount = parse_income(asset)
+        if amount < 0:
+            raise serializers.ValidationError("asset_value cannot be negative.")
+        attrs['asset_value'] = amount
+        return attrs
